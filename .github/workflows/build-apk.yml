@@ -54,7 +54,9 @@ jobs:
         run: flutter pub get
 
       - name: Build APK
-        run: flutter build apk --debug
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+        run: flutter build apk --debug --dart-define=YOUTUBE_API_KEY="$YOUTUBE_API_KEY"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
