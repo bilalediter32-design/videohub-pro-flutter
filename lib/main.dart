@@ -996,9 +996,10 @@ class _YouTubePlayerScreenState
       videoId: widget.videoId,
       autoPlay: true,
       params: const YoutubePlayerParams(
-        showControls: true,
-        showFullscreenButton: true,
-      ),
+  showControls: true,
+  showFullscreenButton: true,
+  privacyEnhancedMode: false,
+),
     );
   }
 
