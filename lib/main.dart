@@ -765,7 +765,327 @@ class _HomeTabState extends State<HomeTab> {
                         site['name'] as String,
                         maxLines: 1,
                         style: const TextStyle(fontSize: 11),
+
+class _HomeTabState extends State<HomeTab> {
+  final TextEditingController searchController =
+      TextEditingController();
+
+  final Dio youtubeDio = Dio();
+
+  String searchText = '';
+  bool isSearching = false;
+  String? searchError;
+
+  List<Map<String, String>> searchResults = [];
+
+  final List<Map<String, dynamic>> shortcuts = [
+    {
+      'name': 'YouTube',
+      'icon': Icons.play_circle_fill,
+      'url': 'https://www.youtube.com',
+    },
+    {
+      'name': 'Facebook',
+      'icon': Icons.facebook,
+      'url': 'https://www.facebook.com',
+    },
+    {
+      'name': 'Instagram',
+      'icon': Icons.camera_alt,
+      'url': 'https://www.instagram.com',
+    },
+    {
+      'name': 'TikTok',
+      'icon': Icons.music_video,
+      'url': 'https://www.tiktok.com',
+    },
+  ];
+
+  final List<Map<String, dynamic>> sections = [
+    {
+      'title': 'Explore videos',
+      'subtitle': 'Discover media platforms',
+      'icon': Icons.explore,
+      'action': 'explore',
+    },
+    {
+      'title': 'My downloads',
+      'subtitle': 'Open your downloaded media',
+      'icon': Icons.download,
+      'action': 'downloads',
+    },
+    {
+      'title': 'My library',
+      'subtitle': 'Browse media on your phone',
+      'icon': Icons.video_library,
+      'action': 'library',
+    },
+  ];
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    youtubeDio.close();
+    super.dispose();
+  }
+
+  Future<void> searchYouTube(String value) async {
+    final query = value.trim();
+
+    if (query.isEmpty) return;
+
+    if (youtubeApiKey.isEmpty) {
+      setState(() {
+        searchError = 'YouTube API key is missing.';
+      });
+      return;
+    }
+
+    setState(() {
+      isSearching = true;
+      searchError = null;
+      searchResults = [];
+    });
+
+    try {
+      final response = await youtubeDio.get(
+        'https://www.googleapis.com/youtube/v3/search',
+        queryParameters: {
+          'part': 'snippet',
+          'type': 'video',
+          'maxResults': 20,
+          'q': query,
+          'key': youtubeApiKey,
+        },
+      );
+
+      final data =
+          Map<String, dynamic>.from(response.data as Map);
+
+      final items = data['items'] as List<dynamic>? ?? [];
+
+      final results = <Map<String, String>>[];
+
+      for (final raw in items) {
+        final item = Map<String, dynamic>.from(raw as Map);
+
+        final id =
+            Map<String, dynamic>.from(item['id'] as Map);
+
+        final snippet =
+            Map<String, dynamic>.from(item['snippet'] as Map);
+
+        final videoId = id['videoId']?.toString() ?? '';
+
+        if (videoId.isEmpty) continue;
+
+        final thumbnails =
+            Map<String, dynamic>.from(
+          snippet['thumbnails'] as Map? ?? {},
+        );
+
+        final thumbnail =
+            thumbnails['high'] ??
+            thumbnails['medium'] ??
+            thumbnails['default'];
+
+        results.add({
+          'id': videoId,
+          'title': snippet['title']?.toString() ?? '',
+          'channel': snippet['channelTitle']?.toString() ?? '',
+          'thumbnail': thumbnail is Map
+              ? thumbnail['url']?.toString() ?? ''
+              : '',
+        });
+      }
+
+      if (!mounted) return;
+
+      setState(() {
+        searchResults = results;
+        isSearching = false;
+        if (results.isEmpty) {
+          searchError = 'No videos found.';
+        }
+      });
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        isSearching = false;
+        searchError = 'Search failed. Check internet or API settings.';
+      });
+    }
+  }
+
+  Future<void> openPlatform(String url) async {
+    try {
+      await launchUrl(
+        Uri.parse(url),
+        mode: LaunchMode.inAppBrowserView,
+      );
+    } catch (_) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Could not open website.'),
+        ),
+      );
+    }
+  }
+
+  Future<void> openVideo(String id) async {
+    await openPlatform(
+      'https://www.youtube.com/watch?v=$id',
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final filteredSections = sections.where((section) {
+      final query = searchText.toLowerCase();
+
+      return section['title']
+              .toString()
+              .toLowerCase()
+              .contains(query) ||
+          section['subtitle']
+              .toString()
+              .toLowerCase()
+              .contains(query);
+    }).toList();
+
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+      children: [
+        TextField(
+          controller: searchController,
+          onChanged: (value) {
+            setState(() => searchText = value);
+          },
+          onSubmitted: searchYouTube,
+          decoration: InputDecoration(
+            hintText: 'Search YouTube videos...',
+            prefixIcon: const Icon(Icons.search),
+            suffixIcon: IconButton(
+              icon: const Icon(Icons.arrow_forward),
+              onPressed: () =>
+                  searchYouTube(searchController.text),
+            ),
+            filled: true,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide.none,
+            ),
+          ),
+        ),
+
+        const SizedBox(height: 18),
+
+        if (isSearching)
+          const Center(
+            child: Padding(
+              padding: EdgeInsets.all(20),
+              child: CircularProgressIndicator(),
+            ),
+          ),
+
+        if (searchError != null)
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Text(
+              searchError!,
+              style: const TextStyle(color: Colors.red),
+            ),
+          ),
+
+        if (searchResults.isNotEmpty) ...[
+          const Text(
+            'YouTube Search Results',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 12),
+
+          ...searchResults.map((video) {
+            return Card(
+              margin: const EdgeInsets.only(bottom: 12),
+              clipBehavior: Clip.antiAlias,
+              child: ListTile(
+                contentPadding: const EdgeInsets.all(8),
+                leading: video['thumbnail']!.isNotEmpty
+                    ? Image.network(
+                        video['thumbnail']!,
+                        width: 112,
+                        height: 72,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) =>
+                            const SizedBox(
+                          width: 112,
+                          height: 72,
+                          child: Icon(Icons.video_library),
+                        ),
+                      )
+                    : const SizedBox(
+                        width: 112,
+                        height: 72,
+                        child: Icon(Icons.video_library),
                       ),
+                title: Text(
+                  video['title']!,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                subtitle: Text(video['channel']!),
+                trailing: const Icon(Icons.play_circle_fill),
+                onTap: () => openVideo(video['id']!),
+              ),
+            );
+          }),
+        ],
+
+        const SizedBox(height: 20),
+
+        const Text(
+          'Your favourite platforms',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+
+        const SizedBox(height: 16),
+
+        SizedBox(
+          height: 100,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: shortcuts.length,
+            separatorBuilder: (_, __) =>
+                const SizedBox(width: 18),
+            itemBuilder: (context, index) {
+              final site = shortcuts[index];
+
+              return InkWell(
+                onTap: () => openPlatform(
+                  site['url'] as String,
+                ),
+                child: SizedBox(
+                  width: 76,
+                  child: Column(
+                    children: [
+                      CircleAvatar(
+                        radius: 28,
+                        child: Icon(
+                          site['icon'] as IconData,
+                          size: 29,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(site['name'] as String),
                     ],
                   ),
                 ),
@@ -790,30 +1110,10 @@ class _HomeTabState extends State<HomeTab> {
           return Card(
             margin: const EdgeInsets.only(bottom: 12),
             child: ListTile(
-              contentPadding: const EdgeInsets.all(14),
-              leading: CircleAvatar(
-                radius: 26,
-                child: Icon(
-                  section['icon'] as IconData,
-                  size: 27,
-                ),
-              ),
-              title: Text(
-                section['title'] as String,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              subtitle: Padding(
-                padding: const EdgeInsets.only(top: 5),
-                child: Text(
-                  section['subtitle'] as String,
-                ),
-              ),
-              trailing: const Icon(
-                Icons.arrow_forward_ios,
-                size: 17,
-              ),
+              leading: Icon(section['icon'] as IconData),
+              title: Text(section['title'] as String),
+              subtitle: Text(section['subtitle'] as String),
+              trailing: const Icon(Icons.arrow_forward_ios),
               onTap: () {
                 switch (section['action']) {
                   case 'explore':
@@ -830,26 +1130,11 @@ class _HomeTabState extends State<HomeTab> {
             ),
           );
         }),
-
-        if (filteredSections.isEmpty)
-          const Padding(
-            padding: EdgeInsets.all(24),
-            child: Center(
-              child: Text('No matching sections found.'),
-            ),
-          ),
-
-        const SizedBox(height: 12),
-
-        const Text(
-          'Platform shortcuts open official websites. '
-          'Platform videos are not imported into this app.',
-          style: TextStyle(fontSize: 12),
-        ),
       ],
     );
   }
 }
+
 
 class ExploreTab extends StatelessWidget {
   const ExploreTab({super.key, required this.onAdd});
