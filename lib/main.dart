@@ -993,14 +993,13 @@ class _YouTubePlayerScreenState
     super.initState();
 
     controller = YoutubePlayerController.fromVideoId(
-      videoId: widget.videoId,
-      autoPlay: true,
-      params: const YoutubePlayerParams(
-  showControls: true,
-  showFullscreenButton: true,
-  privacyEnhancedMode: false,
-),
-    );
+  videoId: widget.videoId,
+  autoPlay: true,
+  params: const YoutubePlayerParams(
+    showControls: true,
+    showFullscreenButton: true,
+  ),
+);
   }
 
   @override
