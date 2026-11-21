@@ -1,5 +1,6 @@
+
 name: videohub_pro
-description: VideoHub Pro Flutter starter for Android and iOS.
+description: VideoHub Pro Flutter media app for Android and iOS.
 publish_to: 'none'
 version: 1.0.0+1
 
@@ -10,6 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   shared_preferences: ^2.3.2
+  photo_manager: ^3.12.0
 
 dev_dependencies:
   flutter_test:
