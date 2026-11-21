@@ -659,7 +659,7 @@ class _HomeTabState extends State<HomeTab> {
     try {
       final opened = await launchUrl(
         uri,
-        mode: LaunchMode.externalApplication,
+        mode: LaunchMode.inAppBrowserView,
       );
 
       if (!opened && mounted) {
