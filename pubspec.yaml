@@ -1,3 +1,4 @@
+
 name: videohub_pro
 description: VideoHub Pro Flutter media app for Android and iOS.
 publish_to: 'none'
@@ -9,10 +10,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
   shared_preferences: ^2.3.2
   dio: ^5.7.0
   path_provider: ^2.1.4
   open_filex: ^4.5.0
+  photo_manager: ^3.6.4
 
 dev_dependencies:
   flutter_test:
