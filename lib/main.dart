@@ -575,41 +575,273 @@ class _VideoHubHomeState extends State<VideoHubHome> {
       ),
     );
   }
-}class HomeTab extends StatelessWidget {
-  const HomeTab({super.key});
+}
+class HomeTab extends StatefulWidget {
+  const HomeTab({
+    super.key,
+    required this.onExplore,
+    required this.onDownloads,
+    required this.onLibrary,
+  });
+
+  final VoidCallback onExplore;
+  final VoidCallback onDownloads;
+  final VoidCallback onLibrary;
 
   @override
-  Widget build(BuildContext context) => ListView(
-        padding: const EdgeInsets.all(20),
-        children: [
-          const Text(
-            'Your media, in one place',
-            style: TextStyle(fontSize: 27, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            'Download authorized audio and video files, then find them in your library.',
-          ),
-          const SizedBox(height: 22),
-          const FeatureTile(
-            icon: Icons.download,
-            title: 'Download manager',
-            subtitle: 'Up to 5 tasks in the queue, with 2 running at once.',
-          ),
-          const SizedBox(height: 10),
-          const FeatureTile(
-            icon: Icons.pause_circle_outline,
-            title: 'Pause and resume',
-            subtitle: 'Resume partial files when the server supports byte ranges.',
-          ),
-          const SizedBox(height: 10),
-          const FeatureTile(
-            icon: Icons.video_library,
-            title: 'Device media library',
-            subtitle: 'Browse videos and audio available on your phone.',
-          ),
-        ],
+  State<HomeTab> createState() => _HomeTabState();
+}
+
+class _HomeTabState extends State<HomeTab> {
+  final TextEditingController searchController =
+      TextEditingController();
+
+  String searchText = '';
+
+  final List<Map<String, dynamic>> shortcuts = [
+    {
+      'name': 'YouTube',
+      'icon': Icons.play_circle_fill,
+      'url': 'https://www.youtube.com',
+    },
+    {
+      'name': 'Facebook',
+      'icon': Icons.facebook,
+      'url': 'https://www.facebook.com',
+    },
+    {
+      'name': 'Instagram',
+      'icon': Icons.camera_alt,
+      'url': 'https://www.instagram.com',
+    },
+    {
+      'name': 'TikTok',
+      'icon': Icons.music_video,
+      'url': 'https://www.tiktok.com',
+    },
+  ];
+
+  final List<Map<String, dynamic>> sections = [
+    {
+      'title': 'Explore videos',
+      'subtitle': 'Discover media platforms',
+      'icon': Icons.explore,
+      'action': 'explore',
+    },
+    {
+      'title': 'My downloads',
+      'subtitle': 'Open your downloaded media',
+      'icon': Icons.download,
+      'action': 'downloads',
+    },
+    {
+      'title': 'My library',
+      'subtitle': 'Browse media on your phone',
+      'icon': Icons.video_library,
+      'action': 'library',
+    },
+  ];
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
+
+  Future<void> openPlatform(String url) async {
+    final uri = Uri.parse(url);
+
+    try {
+      final opened = await launchUrl(
+        uri,
+        mode: LaunchMode.externalApplication,
       );
+
+      if (!opened && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Could not open this website.'),
+          ),
+        );
+      }
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Website could not be opened.'),
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final filteredSections = sections.where((section) {
+      final query = searchText.toLowerCase();
+
+      return section['title']
+              .toString()
+              .toLowerCase()
+              .contains(query) ||
+          section['subtitle']
+              .toString()
+              .toLowerCase()
+              .contains(query);
+    }).toList();
+
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+      children: [
+        TextField(
+          controller: searchController,
+          onChanged: (value) {
+            setState(() => searchText = value);
+          },
+          decoration: InputDecoration(
+            hintText: 'Search VideoHub Pro...',
+            prefixIcon: const Icon(Icons.search),
+            suffixIcon: IconButton(
+              icon: const Icon(Icons.clear),
+              onPressed: () {
+                searchController.clear();
+                setState(() => searchText = '');
+              },
+            ),
+            filled: true,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide.none,
+            ),
+          ),
+        ),
+
+        const SizedBox(height: 24),
+
+        const Text(
+          'Your favourite platforms',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+
+        const SizedBox(height: 16),
+
+        SizedBox(
+          height: 100,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: shortcuts.length,
+            separatorBuilder: (_, __) =>
+                const SizedBox(width: 18),
+            itemBuilder: (context, index) {
+              final site = shortcuts[index];
+
+              return InkWell(
+                onTap: () => openPlatform(
+                  site['url'] as String,
+                ),
+                borderRadius: BorderRadius.circular(14),
+                child: SizedBox(
+                  width: 76,
+                  child: Column(
+                    children: [
+                      CircleAvatar(
+                        radius: 28,
+                        child: Icon(
+                          site['icon'] as IconData,
+                          size: 29,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        site['name'] as String,
+                        maxLines: 1,
+                        style: const TextStyle(fontSize: 11),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+
+        const SizedBox(height: 22),
+
+        const Text(
+          'Your media hub',
+          style: TextStyle(
+            fontSize: 21,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+
+        const SizedBox(height: 12),
+
+        ...filteredSections.map((section) {
+          return Card(
+            margin: const EdgeInsets.only(bottom: 12),
+            child: ListTile(
+              contentPadding: const EdgeInsets.all(14),
+              leading: CircleAvatar(
+                radius: 26,
+                child: Icon(
+                  section['icon'] as IconData,
+                  size: 27,
+                ),
+              ),
+              title: Text(
+                section['title'] as String,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              subtitle: Padding(
+                padding: const EdgeInsets.only(top: 5),
+                child: Text(
+                  section['subtitle'] as String,
+                ),
+              ),
+              trailing: const Icon(
+                Icons.arrow_forward_ios,
+                size: 17,
+              ),
+              onTap: () {
+                switch (section['action']) {
+                  case 'explore':
+                    widget.onExplore();
+                    break;
+                  case 'downloads':
+                    widget.onDownloads();
+                    break;
+                  case 'library':
+                    widget.onLibrary();
+                    break;
+                }
+              },
+            ),
+          );
+        }),
+
+        if (filteredSections.isEmpty)
+          const Padding(
+            padding: EdgeInsets.all(24),
+            child: Center(
+              child: Text('No matching sections found.'),
+            ),
+          ),
+
+        const SizedBox(height: 12),
+
+        const Text(
+          'Platform shortcuts open official websites. '
+          'Platform videos are not imported into this app.',
+          style: TextStyle(fontSize: 12),
+        ),
+      ],
+    );
+  }
 }
 
 class ExploreTab extends StatelessWidget {
