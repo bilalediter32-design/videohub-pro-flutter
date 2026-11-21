@@ -73,7 +73,7 @@ class _VideoHubProAppState extends State<VideoHubProApp> {
   @override
   void initState() {
     super.initState();
-    darkMode = widget.prefs.getBool('darkMode') ?? true;
+    darkMode = widget.prefs.getBool('darkMode') ?? false;
     lightStyle = widget.prefs.getString('lightStyle') ?? 'Classic';
   }
 
