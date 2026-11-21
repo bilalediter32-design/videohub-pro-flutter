@@ -498,9 +498,13 @@ class _VideoHubHomeState extends State<VideoHubHome> {
     final completed =
         items.where((item) => item.status == 'Completed').toList();
     final pages = [
-      const HomeTab(),
-      ExploreTab(onAdd: () => setState(() => selectedTab = 2)),
-      DownloadsTab(
+      HomeTab(
+  onExplore: () => setState(() => selectedTab = 1),
+  onDownloads: () => setState(() => selectedTab = 2),
+  onLibrary: () => setState(() => selectedTab = 3),
+),
+ExploreTab(onAdd: () => setState(() => selectedTab = 2)),
+DownloadsTab(
         items: items,
         onOpen: _openDownload,
         onPause: _pauseItem,
