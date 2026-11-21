@@ -10,6 +10,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:youtube_player_iframe/youtube_player_iframe.dart';
+
 const String youtubeApiKey = String.fromEnvironment(
   'YOUTUBE_API_KEY',
 );
@@ -770,11 +772,12 @@ class _HomeTabState extends State<HomeTab> {
   }
 
   Future<void> openVideo(String id) async {
-    await openPlatform(
-      'https://www.youtube.com/watch?v=$id',
-    );
+  Navigator.of(context).push(
+    MaterialPageRoute(
+      builder: (_) => YouTubePlayerScreen(videoId: id),
+    ),
+  );
   }
-
   @override
   Widget build(BuildContext context) {
     final filteredSections = sections.where((section) {
@@ -968,7 +971,72 @@ class _HomeTabState extends State<HomeTab> {
     );
   }
 }
+class YouTubePlayerScreen extends StatefulWidget {
+  const YouTubePlayerScreen({
+    super.key,
+    required this.videoId,
+  });
 
+  final String videoId;
+
+  @override
+  State<YouTubePlayerScreen> createState() =>
+      _YouTubePlayerScreenState();
+}
+
+class _YouTubePlayerScreenState
+    extends State<YouTubePlayerScreen> {
+  late final YoutubePlayerController controller;
+
+  @override
+  void initState() {
+    super.initState();
+
+    controller = YoutubePlayerController.fromVideoId(
+      videoId: widget.videoId,
+      autoPlay: true,
+      params: const YoutubePlayerParams(
+        showControls: true,
+        showFullscreenButton: true,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    controller.close();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('VideoHub Pro Player'),
+      ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            YoutubePlayer(
+              controller: controller,
+              aspectRatio: 16 / 9,
+            ),
+            const Padding(
+              padding: EdgeInsets.all(16),
+              child: Text(
+                'Now Playing',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
 class ExploreTab extends StatelessWidget {
   const ExploreTab({super.key, required this.onAdd});
