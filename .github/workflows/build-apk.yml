@@ -1,3 +1,4 @@
+
 name: Build VideoHub Pro Android APK
 
 on:
@@ -22,6 +23,30 @@ jobs:
 
       - name: Generate Android files
         run: flutter create --platforms=android .
+
+      - name: Configure media permissions
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path("android/app/src/main/AndroidManifest.xml")
+          content = path.read_text()
+
+          permissions = """
+              <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+              <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+              <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+              <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" />
+          """
+
+          content = content.replace(
+              "    <application",
+              permissions + "\n    <application",
+              1
+          )
+
+          path.write_text(content)
+          PY
 
       - name: Install dependencies
         run: flutter pub get
