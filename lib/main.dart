@@ -1041,6 +1041,7 @@ class _YouTubePlayerScreenState
       ),
     );
   }
+}
 class ExploreTab extends StatelessWidget {
   const ExploreTab({super.key, required this.onAdd});
   final VoidCallback onAdd;
