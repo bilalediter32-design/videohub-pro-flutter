@@ -1010,9 +1010,8 @@ class _YouTubePlayerScreenState
     super.dispose();
   }
 
+  
   @override
-  Widget build(BuildContext context) {
-    @override
   Widget build(BuildContext context) {
     return YoutubePlayerScaffold(
       controller: controller,
@@ -1043,6 +1042,7 @@ class _YouTubePlayerScreenState
       },
     );
   }
+}
 
 class ExploreTab extends StatelessWidget {
   const ExploreTab({super.key, required this.onAdd});
