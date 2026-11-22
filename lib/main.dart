@@ -1015,36 +1015,33 @@ class _YouTubePlayerScreenState
   
   @override
   Widget build(BuildContext context) {
-    return YoutubePlayerScaffold(
-      controller: controller,
-      aspectRatio: 16 / 9,
-      builder: (context, player) {
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text('VideoHub Pro Player'),
-          ),
-          body: SafeArea(
-            child: Column(
-              children: [
-                player,
-                const Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Text(
-                    'Now Playing',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('VideoHub Pro Player'),
+      ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            YoutubePlayer(
+              controller: controller,
+              aspectRatio: 16 / 9,
             ),
-          ),
-        );
-      },
+            const Padding(
+              padding: EdgeInsets.all(16),
+              child: Text(
+                'Now Playing',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
-}
+
 
 class ExploreTab extends StatelessWidget {
   const ExploreTab({super.key, required this.onAdd});
