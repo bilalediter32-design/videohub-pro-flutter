@@ -1003,19 +1003,7 @@ class _YouTubePlayerScreenState
   origin: 'https://www.youtube-nocookie.com',
 ),
 );
-    controller.setFullScreenListener((isFullScreen) {
-      SystemChrome.setPreferredOrientations(
-        isFullScreen
-            ? [
-                DeviceOrientation.landscapeLeft,
-                DeviceOrientation.landscapeRight,
-              ]
-            : [
-                DeviceOrientation.portraitUp,
-                DeviceOrientation.portraitDown,
-              ],
-      );
-    });
+    
   }
 
   @override
