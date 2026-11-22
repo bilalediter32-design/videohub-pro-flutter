@@ -687,11 +687,12 @@ class _HomeTabState extends State<HomeTab> {
       final response = await youtubeDio.get(
         'https://www.googleapis.com/youtube/v3/search',
         queryParameters: {
-          'part': 'snippet',
-          'type': 'video',
-          'maxResults': 20,
-          'q': query,
-          'key': youtubeApiKey,
+         'part': 'snippet',
+'type': 'video',
+'videoEmbeddable': 'true',
+'maxResults': 20,
+'q': query,
+'key': youtubeApiKey,,
         },
       );
 
