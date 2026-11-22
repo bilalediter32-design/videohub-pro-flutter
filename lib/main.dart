@@ -692,7 +692,7 @@ class _HomeTabState extends State<HomeTab> {
 'videoEmbeddable': 'true',
 'maxResults': 20,
 'q': query,
-'key': youtubeApiKey,,
+'key': youtubeApiKey,
         },
       );
 
