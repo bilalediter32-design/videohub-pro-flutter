@@ -1004,7 +1004,19 @@ class _YouTubePlayerScreenState
 ),
 );
   }
-
+    controller.setFullScreenListener((isFullScreen) {
+      SystemChrome.setPreferredOrientations(
+        isFullScreen
+            ? [
+                DeviceOrientation.landscapeLeft,
+                DeviceOrientation.landscapeRight,
+              ]
+            : [
+                DeviceOrientation.portraitUp,
+                DeviceOrientation.portraitDown,
+              ],
+      );
+    });
   @override
   void dispose() {
     controller.close();
