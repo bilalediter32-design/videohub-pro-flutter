@@ -1203,13 +1203,25 @@ class DownloadsTab extends StatelessWidget {
   State<LibraryTab> createState() => _LibraryTabState();
 }
 
+
 class _LibraryTabState extends State<LibraryTab> {
   int mediaTab = 0;
   bool loading = false;
   bool permissionDenied = false;
+  bool loadingMore = false;
   String? errorMessage;
+
   List<AssetEntity> videos = [];
   List<AssetEntity> audios = [];
+
+  AssetPathEntity? videoPath;
+  AssetPathEntity? audioPath;
+
+  int videoPage = 0;
+  int audioPage = 0;
+
+  bool hasMoreVideos = true;
+  bool hasMoreAudios = true;
 
   @override
   void initState() {
@@ -1219,14 +1231,23 @@ class _LibraryTabState extends State<LibraryTab> {
 
   Future<void> _scanDevice() async {
     if (loading) return;
+
     setState(() {
       loading = true;
       permissionDenied = false;
       errorMessage = null;
+      loadingMore = false;
+      videos = [];
+      audios = [];
+      videoPage = 0;
+      audioPage = 0;
+      hasMoreVideos = true;
+      hasMoreAudios = true;
     });
 
     try {
       final permission = await PhotoManager.requestPermissionExtend();
+
       if (!permission.isAuth && !permission.hasAccess) {
         if (!mounted) return;
         setState(() {
@@ -1240,32 +1261,95 @@ class _LibraryTabState extends State<LibraryTab> {
         type: RequestType.video,
         onlyAll: true,
       );
+
       final audioPaths = await PhotoManager.getAssetPathList(
         type: RequestType.audio,
         onlyAll: true,
       );
 
-      final videoList = videoPaths.isEmpty
+      videoPath = videoPaths.isEmpty ? null : videoPaths.first;
+      audioPath = audioPaths.isEmpty ? null : audioPaths.first;
+
+      final videoList = videoPath == null
           ? <AssetEntity>[]
-          : await videoPaths.first.getAssetListPaged(page: 0, size: 200);
-      final audioList = audioPaths.isEmpty
+          : await videoPath!.getAssetListPaged(
+              page: 0,
+              size: 60,
+            );
+
+      final audioList = audioPath == null
           ? <AssetEntity>[]
-          : await audioPaths.first.getAssetListPaged(page: 0, size: 200);
+          : await audioPath!.getAssetListPaged(
+              page: 0,
+              size: 60,
+            );
 
       if (!mounted) return;
+
       setState(() {
         videos = videoList;
         audios = audioList;
+        hasMoreVideos = videoList.length == 60;
+        hasMoreAudios = audioList.length == 60;
         loading = false;
       });
     } catch (e) {
       if (!mounted) return;
+
       setState(() {
-        errorMessage = 'Could not scan device media. Please try again.';
+        errorMessage =
+            'Could not scan device media. Please try again.';
         loading = false;
       });
     }
   }
+
+  Future<void> _loadMoreDeviceMedia() async {
+    if (loadingMore) return;
+
+    final isVideo = mediaTab == 0;
+    final path = isVideo ? videoPath : audioPath;
+    final hasMore = isVideo ? hasMoreVideos : hasMoreAudios;
+
+    if (path == null || !hasMore) return;
+
+    setState(() {
+      loadingMore = true;
+    });
+
+    try {
+      final nextPage = isVideo ? videoPage + 1 : audioPage + 1;
+
+      final newItems = await path.getAssetListPaged(
+        page: nextPage,
+        size: 60,
+      );
+
+      if (!mounted) return;
+
+      setState(() {
+        if (isVideo) {
+          videos.addAll(newItems);
+          videoPage = nextPage;
+          hasMoreVideos = newItems.length == 60;
+        } else {
+          audios.addAll(newItems);
+          audioPage = nextPage;
+          hasMoreAudios = newItems.length == 60;
+        }
+
+        loadingMore = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        loadingMore = false;
+        errorMessage = 'Could not load more media. Please try again.';
+      });
+    }
+  }
+
 
   Future<void> _openDeviceAsset(AssetEntity asset) async {
     final file = await asset.file;
