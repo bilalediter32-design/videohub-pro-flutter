@@ -752,7 +752,7 @@ class _HomeTabState extends State<HomeTab> {
             thumbnails['medium'] ??
             thumbnails['default'];
 
-                results.add({
+        results.add({
           'id': videoId,
           'title': snippet['title']?.toString() ?? '',
           'channel': snippet['channelTitle']?.toString() ?? '',
@@ -761,8 +761,9 @@ class _HomeTabState extends State<HomeTab> {
               ? thumbnail['url']?.toString() ?? ''
               : '',
         });
-      final videoIds = results.map((video) => video['id']!).join(',');
+      }
 
+      final videoIds = results.map((video) => video['id']!).join(',');
       if (videoIds.isNotEmpty) {
         final detailsResponse = await youtubeDio.get(
           'https://www.googleapis.com/youtube/v3/videos',
