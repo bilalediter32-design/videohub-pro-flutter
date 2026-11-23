@@ -752,16 +752,15 @@ class _HomeTabState extends State<HomeTab> {
             thumbnails['medium'] ??
             thumbnails['default'];
 
-        results.add({
+                results.add({
           'id': videoId,
           'title': snippet['title']?.toString() ?? '',
           'channel': snippet['channelTitle']?.toString() ?? '',
+          'publishedAt': snippet['publishedAt']?.toString() ?? '',
           'thumbnail': thumbnail is Map
               ? thumbnail['url']?.toString() ?? ''
               : '',
         });
-      }
-
       final videoIds = results.map((video) => video['id']!).join(',');
 
       if (videoIds.isNotEmpty) {
