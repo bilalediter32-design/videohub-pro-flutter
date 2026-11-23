@@ -1466,17 +1466,35 @@ Widget build(BuildContext context) {
                                   message:
                                       'Media available to this app will appear here.',
                                 )
-                              : ListView.builder(
-                                  padding: const EdgeInsets.all(12),
-                                  itemCount: deviceItems.length,
-                                  itemBuilder: (context, index) {
-                                    final asset = deviceItems[index];
-                                    return _DeviceMediaTile(
-                                      asset: asset,
-                                      onTap: () => _openDeviceAsset(asset),
-                                    );
-                                  },
-                                ),
+                              
+ListView.builder(
+  padding: const EdgeInsets.all(12),
+  itemCount: deviceItems.length +
+      (hasMoreDeviceItems ? 1 : 0),
+  itemBuilder: (context, index) {
+    if (index == deviceItems.length) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        child: Center(
+          child: loadingMore
+              ? const CircularProgressIndicator()
+              : FilledButton.icon(
+                  onPressed: _loadMoreDeviceMedia,
+                  icon: const Icon(Icons.expand_more),
+                  label: const Text('Load More'),
+                ),
+        ),
+      );
+    }
+
+    final asset = deviceItems[index];
+    return _DeviceMediaTile(
+      asset: asset,
+      onTap: () => _openDeviceAsset(asset),
+    );
+  },
+),
+
         ),
       ],
     );
