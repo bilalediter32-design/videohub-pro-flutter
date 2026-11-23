@@ -1206,6 +1206,9 @@ class DownloadsTab extends StatelessWidget {
 
 class _LibraryTabState extends State<LibraryTab> {
   int mediaTab = 0;
+  String librarySearch = '';
+  bool newestFirst = true;
+
   bool loading = false;
   bool permissionDenied = false;
   bool loadingMore = false;
