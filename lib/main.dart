@@ -1195,43 +1195,7 @@ class _HomeTabState extends State<HomeTab> {
           ),
         ),
 
-        const SizedBox(height: 22),
-
-        const Text(
-          'Your media hub',
-          style: TextStyle(
-            fontSize: 21,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-
-        const SizedBox(height: 12),
-
-        ...filteredSections.map((section) {
-          return Card(
-            margin: const EdgeInsets.only(bottom: 12),
-            child: ListTile(
-              leading: Icon(section['icon'] as IconData),
-              title: Text(section['title'] as String),
-              subtitle: Text(section['subtitle'] as String),
-              trailing: const Icon(Icons.arrow_forward_ios),
-              onTap: () {
-                switch (section['action']) {
-                  case 'explore':
-                    widget.onExplore();
-                    break;
-                  case 'downloads':
-                    widget.onDownloads();
-                    break;
-                  case 'library':
-                    widget.onLibrary();
-                    break;
-                }
-              },
-            ),
-          );
-        }),
-      ],
+              ],
     );
   }
 }
