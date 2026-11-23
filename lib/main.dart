@@ -645,26 +645,7 @@ class _HomeTabState extends State<HomeTab> {
   ];
 
 
-  final List<Map<String, dynamic>> sections = [
-    {
-      'title': 'Explore videos',
-      'subtitle': 'Discover media platforms',
-      'icon': Icons.explore,
-      'action': 'explore',
-    },
-    {
-      'title': 'My downloads',
-      'subtitle': 'Open your downloaded media',
-      'icon': Icons.download,
-      'action': 'downloads',
-    },
-    {
-      'title': 'My library',
-      'subtitle': 'Browse media on your phone',
-      'icon': Icons.video_library,
-      'action': 'library',
-    },
-  ];
+  
   @override
   void initState() {
     super.initState();
@@ -881,18 +862,7 @@ class _HomeTabState extends State<HomeTab> {
   }
   @override
   Widget build(BuildContext context) {
-    final filteredSections = sections.where((section) {
-      final query = searchText.toLowerCase();
-
-      return section['title']
-              .toString()
-              .toLowerCase()
-              .contains(query) ||
-          section['subtitle']
-              .toString()
-              .toLowerCase()
-              .contains(query);
-    }).toList();
+    
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
