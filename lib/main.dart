@@ -1151,7 +1151,7 @@ class _HomeTabState extends State<HomeTab> {
         const SizedBox(height: 20),
 
         const Text(
-          'Your favourite platforms',
+          'Explore Platforms',
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
