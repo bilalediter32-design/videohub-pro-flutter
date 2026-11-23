@@ -1434,20 +1434,7 @@ Widget build(BuildContext context) {
           ),
         ),
         const SizedBox(height: 8),
-        Expanded(
-          child: loading
-              ? const Center(child: CircularProgressIndicator())
-              : permissionDenied
-                  ? EmptyTab(
-                      icon: Icons.lock_outline,
-                      title: 'Media permission needed',
-                      message:
-                          'Allow VideoHub Pro to access the phone media you choose.',
-                      action: FilledButton(
-                        onPressed: _scanDevice,
-                        child: const Text('Grant permission'),
-                      ),
-                    )
+        
         Expanded(
           child: Builder(
             builder: (context) {
@@ -1528,7 +1515,9 @@ Widget build(BuildContext context) {
               );
             },
           ),
-        ),      ],
+        ),
+      ],
+
     );
   }
 
