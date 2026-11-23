@@ -1059,6 +1059,28 @@ class _HomeTabState extends State<HomeTab> {
                             child: Center(
                               child: Icon(Icons.video_library, size: 45),
                             ),
+                          ),                        if ((video['duration'] ?? '').isNotEmpty)
+                          Positioned(
+                            right: 10,
+                            bottom: 10,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 7,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.black87,
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Text(
+                                formatVideoDuration(video['duration']!),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
                           ),
                         const Icon(
                           Icons.play_circle_fill,
