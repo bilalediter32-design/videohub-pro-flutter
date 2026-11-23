@@ -665,7 +665,14 @@ class _HomeTabState extends State<HomeTab> {
       'action': 'library',
     },
   ];
+  @override
+  void initState() {
+    super.initState();
 
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      searchYouTube('trending');
+    });
+  }
   @override
   void dispose() {
     searchController.dispose();
