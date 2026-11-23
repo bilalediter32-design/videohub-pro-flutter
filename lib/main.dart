@@ -1372,10 +1372,20 @@ class _LibraryTabState extends State<LibraryTab> {
 
 @override
 Widget build(BuildContext context) {
-  final deviceItems = mediaTab == 0 ? videos : audios;
-  final hasMoreDeviceItems =
-      mediaTab == 0 ? hasMoreVideos : hasMoreAudios;
+  final sourceItems = mediaTab == 0 ? videos : audios;
 
+final deviceItems = sourceItems
+    .where((asset) => asset.title
+        .toLowerCase()
+        .contains(librarySearch.toLowerCase()))
+    .toList();
+
+deviceItems.sort((a, b) => newestFirst
+    ? b.createDateTime.compareTo(a.createDateTime)
+    : a.createDateTime.compareTo(b.createDateTime));
+
+final hasMoreDeviceItems =
+    mediaTab == 0 ? hasMoreVideos : hasMoreAudios;
   return Column(
       children: [
         Padding(
@@ -1432,9 +1442,43 @@ Widget build(BuildContext context) {
             onSelectionChanged: (value) =>
                 setState(() => mediaTab = value.first),
           ),
-        ),
+        ),        if (mediaTab != 2)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    onChanged: (value) {
+                      setState(() {
+                        librarySearch = value;
+                      });
+                    },
+                    decoration: const InputDecoration(
+                      hintText: 'Search videos or audio...',
+                      prefixIcon: Icon(Icons.search),
+                      border: OutlineInputBorder(),
+                      isDense: true,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  tooltip: newestFirst ? 'Newest first' : 'Oldest first',
+                  onPressed: () {
+                    setState(() {
+                      newestFirst = !newestFirst;
+                    });
+                  },
+                  icon: Icon(
+                    newestFirst
+                        ? Icons.arrow_downward
+                        : Icons.arrow_upward,
+                  ),
+                ),
+              ],
+            ),
+          ),
         const SizedBox(height: 8),
-        
         Expanded(
           child: Builder(
             builder: (context) {
