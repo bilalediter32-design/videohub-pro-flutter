@@ -762,6 +762,42 @@ class _HomeTabState extends State<HomeTab> {
         });
       }
 
+      final videoIds = results.map((video) => video['id']!).join(',');
+
+      if (videoIds.isNotEmpty) {
+        final detailsResponse = await youtubeDio.get(
+          'https://www.googleapis.com/youtube/v3/videos',
+          queryParameters: {
+            'part': 'contentDetails',
+            'id': videoIds,
+            'key': youtubeApiKey,
+          },
+        );
+
+        final detailsData =
+            Map<String, dynamic>.from(detailsResponse.data as Map);
+
+        final detailItems =
+            detailsData['items'] as List<dynamic>? ?? [];
+
+        for (final raw in detailItems) {
+          final detail = Map<String, dynamic>.from(raw as Map);
+          final videoId = detail['id']?.toString() ?? '';
+          final contentDetails =
+              Map<String, dynamic>.from(
+            detail['contentDetails'] as Map? ?? {},
+          );
+
+          final resultIndex =
+              results.indexWhere((video) => video['id'] == videoId);
+
+          if (resultIndex != -1) {
+            results[resultIndex]['duration'] =
+                contentDetails['duration']?.toString() ?? '';
+          }
+        }
+      }
+
       if (!mounted) return;
 
       setState(() {
