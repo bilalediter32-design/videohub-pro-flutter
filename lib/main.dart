@@ -1059,7 +1059,8 @@ class _HomeTabState extends State<HomeTab> {
                             child: Center(
                               child: Icon(Icons.video_library, size: 45),
                             ),
-                          ),                        if ((video['duration'] ?? '').isNotEmpty)
+                          ),                      
+                        if ((video['duration'] ?? '').isNotEmpty)
                           Positioned(
                             right: 10,
                             bottom: 10,
