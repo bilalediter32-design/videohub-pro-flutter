@@ -1074,7 +1074,20 @@ class _HomeTabState extends State<HomeTab> {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    subtitle: Text(video['channel']!),
+                    subtitle: Column(
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: [
+    Text(video['channel']!),
+    const SizedBox(height: 4),
+    Text(
+      '${formatVideoDuration(video['duration'] ?? '')}  •  ${formatPublishedDate(video['publishedAt'] ?? '')}',
+      style: const TextStyle(
+        fontSize: 12,
+        color: Colors.grey,
+      ),
+    ),
+  ],
+),
                     trailing: IconButton(
                       icon: const Icon(Icons.more_vert),
                       onPressed: () {
