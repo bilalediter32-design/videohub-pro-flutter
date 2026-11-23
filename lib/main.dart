@@ -859,6 +859,50 @@ class _HomeTabState extends State<HomeTab> {
       builder: (_) => YouTubePlayerScreen(videoId: id),
     ),
   );
+  } 
+  Widget buildPlatformExploration() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 20),
+        const Text(
+          'Explore Platforms',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 16),
+        SizedBox(
+          height: 100,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: shortcuts.length,
+            separatorBuilder: (_, __) =>
+                const SizedBox(width: 18),
+            itemBuilder: (context, index) {
+              final site = shortcuts[index];
+              return InkWell(
+                onTap: () => openPlatform(site['url'] as String),
+                child: SizedBox(
+                  width: 76,
+                  child: Column(
+                    children: [
+                      CircleAvatar(
+                        radius: 28,
+                        child: Icon(site['icon'] as IconData, size: 29),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(site['name'] as String),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
   }
   @override
   Widget build(BuildContext context) {
