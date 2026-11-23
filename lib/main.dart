@@ -1367,10 +1367,13 @@ class _LibraryTabState extends State<LibraryTab> {
     await OpenFilex.open(item.path);
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final deviceItems = mediaTab == 0 ? videos : audios;
-    return Column(
+@override
+Widget build(BuildContext context) {
+  final deviceItems = mediaTab == 0 ? videos : audios;
+  final hasMoreDeviceItems =
+      mediaTab == 0 ? hasMoreVideos : hasMoreAudios;
+
+  return Column(
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(18, 18, 18, 8),
