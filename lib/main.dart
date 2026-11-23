@@ -672,7 +672,35 @@ class _HomeTabState extends State<HomeTab> {
     youtubeDio.close();
     super.dispose();
   }
+  String formatVideoDuration(String value) {
+    final match = RegExp(
+      r'^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$',
+    ).firstMatch(value);
 
+    if (match == null) return '';
+
+    final hours = int.tryParse(match.group(1) ?? '0') ?? 0;
+    final minutes = int.tryParse(match.group(2) ?? '0') ?? 0;
+    final seconds = int.tryParse(match.group(3) ?? '0') ?? 0;
+
+    if (hours > 0) {
+      return '$hours:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+    }
+
+    return '$minutes:${seconds.toString().padLeft(2, '0')}';
+  }
+
+  String formatPublishedDate(String value) {
+    final date = DateTime.tryParse(value);
+    if (date == null) return '';
+
+    const months = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+    ];
+
+    return '${date.day} ${months[date.month - 1]} ${date.year}';
+  }
   Future<void> submitSearchOrUrl(String value) async {
     final text = value.trim();
 
