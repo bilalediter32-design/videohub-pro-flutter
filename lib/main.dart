@@ -827,15 +827,14 @@ class _HomeTabState extends State<HomeTab> {
           controller: searchController,
           onChanged: (value) {
             setState(() => searchText = value);
-          },
-          onSubmitted: searchYouTube,
+          },onSubmitted: submitSearchOrUrl,
           decoration: InputDecoration(
-            hintText: 'Search YouTube videos...',
+            hintText: 'Search videos or enter URL...',
             prefixIcon: const Icon(Icons.search),
             suffixIcon: IconButton(
               icon: const Icon(Icons.arrow_forward),
               onPressed: () =>
-                  searchYouTube(searchController.text),
+                  submitSearchOrUrl(searchController.text),
             ),
             filled: true,
             border: OutlineInputBorder(
