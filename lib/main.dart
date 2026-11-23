@@ -1025,7 +1025,7 @@ class _HomeTabState extends State<HomeTab> {
 
         if (searchResults.isNotEmpty) ...[
           const Text(
-            'YouTube Search Results',
+            'Discover Videos',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
