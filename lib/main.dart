@@ -1470,7 +1470,7 @@ Widget build(BuildContext context) {
                                       'Media available to this app will appear here.',
                                 )
                               
-ListView.builder(
+: ListView.builder(
   padding: const EdgeInsets.all(12),
   itemCount: deviceItems.length +
       (hasMoreDeviceItems ? 1 : 0),
