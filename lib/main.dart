@@ -1790,3 +1790,29 @@ class EmptyTab extends StatelessWidget {
         ),
       );
 }
+class ClipsTab extends StatelessWidget {
+  const ClipsTab({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const EmptyTab(
+      icon: Icons.play_circle_outline,
+      title: 'Clips',
+      message: 'Short videos will appear here.',
+    );
+  }
+}
+
+class PlayZoneTab extends StatelessWidget {
+  const PlayZoneTab({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const EmptyTab(
+      icon: Icons.sports_esports_outlined,
+      title: 'PlayZone',
+      message: 'Games will appear here.',
+    );
+  }
+}
+
