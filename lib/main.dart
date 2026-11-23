@@ -1448,58 +1448,87 @@ Widget build(BuildContext context) {
                         child: const Text('Grant permission'),
                       ),
                     )
-                  : errorMessage != null
-                      ? EmptyTab(
-                          icon: Icons.error_outline,
-                          title: 'Library scan failed',
-                          message: errorMessage!,
-                          action: FilledButton(
-                            onPressed: _scanDevice,
-                            child: const Text('Try again'),
-                          ),
-                        )
-                      : mediaTab == 2
-                          ? _buildDownloads()
-                          : deviceItems.isEmpty
-                              ? EmptyTab(
-                                  icon: mediaTab == 0
-                                      ? Icons.video_library_outlined
-                                      : Icons.music_note,
-                                  title: 'No media found',
-                                  message:
-                                      'Media available to this app will appear here.',
-                                )
-                              
-: ListView.builder(
-  padding: const EdgeInsets.all(12),
-  itemCount: deviceItems.length +
-      (hasMoreDeviceItems ? 1 : 0),
-  itemBuilder: (context, index) {
-    if (index == deviceItems.length) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        child: Center(
-          child: loadingMore
-              ? const CircularProgressIndicator()
-              : FilledButton.icon(
-                  onPressed: _loadMoreDeviceMedia,
-                  icon: const Icon(Icons.expand_more),
-                  label: const Text('Load More'),
-                ),
-        ),
-      );
-    }
+        Expanded(
+          child: Builder(
+            builder: (context) {
+              if (loading) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
 
-    final asset = deviceItems[index];
-    return _DeviceMediaTile(
-      asset: asset,
-      onTap: () => _openDeviceAsset(asset),
-    );
-  },
-),
+              if (permissionDenied) {
+                return EmptyTab(
+                  icon: Icons.lock_outline,
+                  title: 'Media permission needed',
+                  message:
+                      'Allow VideoHub Pro to access the phone media you choose.',
+                  action: FilledButton(
+                    onPressed: _scanDevice,
+                    child: const Text('Grant permission'),
+                  ),
+                );
+              }
 
-        ),
-      ],
+              if (errorMessage != null) {
+                return EmptyTab(
+                  icon: Icons.error_outline,
+                  title: 'Library scan failed',
+                  message: errorMessage!,
+                  action: FilledButton(
+                    onPressed: _scanDevice,
+                    child: const Text('Try again'),
+                  ),
+                );
+              }
+
+              if (mediaTab == 2) {
+                return _buildDownloads();
+              }
+
+              if (deviceItems.isEmpty) {
+                return EmptyTab(
+                  icon: mediaTab == 0
+                      ? Icons.video_library_outlined
+                      : Icons.music_note,
+                  title: 'No media found',
+                  message:
+                      'Media available to this app will appear here.',
+                );
+              }
+
+              return ListView.builder(
+                padding: const EdgeInsets.all(12),
+                itemCount: deviceItems.length +
+                    (hasMoreDeviceItems ? 1 : 0),
+                itemBuilder: (context, index) {
+                  if (index == deviceItems.length) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 16,
+                      ),
+                      child: Center(
+                        child: loadingMore
+                            ? const CircularProgressIndicator()
+                            : FilledButton.icon(
+                                onPressed: _loadMoreDeviceMedia,
+                                icon: const Icon(Icons.expand_more),
+                                label: const Text('Load More'),
+                              ),
+                      ),
+                    );
+                  }
+
+                  final asset = deviceItems[index];
+                  return _DeviceMediaTile(
+                    asset: asset,
+                    onTap: () => _openDeviceAsset(asset),
+                  );
+                },
+              );
+            },
+          ),
+        ),      ],
     );
   }
 
