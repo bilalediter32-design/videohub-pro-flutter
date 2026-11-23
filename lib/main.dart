@@ -673,6 +673,24 @@ class _HomeTabState extends State<HomeTab> {
     super.dispose();
   }
 
+  Future<void> submitSearchOrUrl(String value) async {
+    final text = value.trim();
+
+    if (text.isEmpty) return;
+
+    final uri = Uri.tryParse(
+      text.contains('://') ? text : 'https://$text',
+    );
+
+    if (uri != null &&
+        uri.hasAuthority &&
+        uri.host.contains('.')) {
+      await openPlatform(uri.toString());
+    } else {
+      await searchYouTube(text);
+    }
+  }
+
   Future<void> searchYouTube(String value) async {
     final query = value.trim();
 
