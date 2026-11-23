@@ -891,6 +891,33 @@ class _HomeTabState extends State<HomeTab> {
 
         const SizedBox(height: 18),
 
+        Row(
+          children: [
+            ChoiceChip(
+              label: const Text('All'),
+              selected: true,
+              onSelected: (_) {},
+            ),
+            const SizedBox(width: 10),
+            ActionChip(
+              avatar: const Icon(
+                Icons.play_circle_outline,
+                size: 18,
+              ),
+              label: const Text('Shorts'),
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Short videos section coming next.'),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+
+        const SizedBox(height: 16),
+
         if (isSearching)
           const Center(
             child: Padding(
