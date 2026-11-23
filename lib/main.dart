@@ -752,6 +752,9 @@ class _HomeTabState extends State<HomeTab> {
 'type': 'video',
 'videoEmbeddable': 'true',
 'maxResults': 20,
+'order': query.toLowerCase() == 'trending'
+    ? 'viewCount'
+    : 'relevance',
 'q': query,
 'key': youtubeApiKey,
         },
