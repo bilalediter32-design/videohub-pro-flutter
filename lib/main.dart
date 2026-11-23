@@ -1375,7 +1375,8 @@ Widget build(BuildContext context) {
   final sourceItems = mediaTab == 0 ? videos : audios;
 
 final deviceItems = sourceItems
-    .where((asset) => asset.title
+    .where((asset) => (asset.title ?? '')
+    .toLowerCase()
         .toLowerCase()
         .contains(librarySearch.toLowerCase()))
     .toList();
