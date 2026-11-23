@@ -615,11 +615,17 @@ class _HomeTabState extends State<HomeTab> {
 
   List<Map<String, String>> searchResults = [];
 
+  
   final List<Map<String, dynamic>> shortcuts = [
     {
       'name': 'YouTube',
       'icon': Icons.play_circle_fill,
       'url': 'https://www.youtube.com',
+    },
+    {
+      'name': 'WhatsApp',
+      'icon': Icons.chat,
+      'url': 'https://www.whatsapp.com',
     },
     {
       'name': 'Facebook',
@@ -632,11 +638,12 @@ class _HomeTabState extends State<HomeTab> {
       'url': 'https://www.instagram.com',
     },
     {
-      'name': 'TikTok',
-      'icon': Icons.music_video,
-      'url': 'https://www.tiktok.com',
+      'name': 'Sites',
+      'icon': Icons.language,
+      'url': 'https://www.google.com',
     },
   ];
+
 
   final List<Map<String, dynamic>> sections = [
     {
