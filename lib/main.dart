@@ -962,41 +962,80 @@ class _HomeTabState extends State<HomeTab> {
           ),
           const SizedBox(height: 12),
 
+          
           ...searchResults.map((video) {
             return Card(
-              margin: const EdgeInsets.only(bottom: 12),
+              margin: const EdgeInsets.only(bottom: 14),
               clipBehavior: Clip.antiAlias,
-              child: ListTile(
-                contentPadding: const EdgeInsets.all(8),
-                leading: video['thumbnail']!.isNotEmpty
-                    ? Image.network(
-                        video['thumbnail']!,
-                        width: 112,
-                        height: 72,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) =>
-                            const SizedBox(
-                          width: 112,
-                          height: 72,
-                          child: Icon(Icons.video_library),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  InkWell(
+                    onTap: () => openVideo(video['id']!),
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        if (video['thumbnail']!.isNotEmpty)
+                          Image.network(
+                            video['thumbnail']!,
+                            width: double.infinity,
+                            height: 190,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) =>
+                                const SizedBox(
+                              height: 190,
+                              child: Center(
+                                child: Icon(Icons.video_library, size: 45),
+                              ),
+                            ),
+                          )
+                        else
+                          const SizedBox(
+                            height: 190,
+                            child: Center(
+                              child: Icon(Icons.video_library, size: 45),
+                            ),
+                          ),
+                        const Icon(
+                          Icons.play_circle_fill,
+                          size: 58,
+                          color: Colors.white,
                         ),
-                      )
-                    : const SizedBox(
-                        width: 112,
-                        height: 72,
-                        child: Icon(Icons.video_library),
-                      ),
-                title: Text(
-                  video['title']!,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                subtitle: Text(video['channel']!),
-                trailing: const Icon(Icons.play_circle_fill),
-                onTap: () => openVideo(video['id']!),
+                      ],
+                    ),
+                  ),
+                  ListTile(
+                    title: Text(
+                      video['title']!,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    subtitle: Text(video['channel']!),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.more_vert),
+                      onPressed: () {
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (context) => SafeArea(
+                            child: ListTile(
+                              leading: const Icon(Icons.play_arrow),
+                              title: const Text('Play video'),
+                              onTap: () {
+                                Navigator.pop(context);
+                                openVideo(video['id']!);
+                              },
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    onTap: () => openVideo(video['id']!),
+                  ),
+                ],
               ),
             );
           }),
+
         ],
 
         const SizedBox(height: 20),
