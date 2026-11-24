@@ -587,6 +587,44 @@ DownloadsTab(
     );
   }
 }
+class PlatformWebViewScreen extends StatefulWidget {
+  const PlatformWebViewScreen({
+    super.key,
+    required this.url,
+    required this.title,
+  });
+
+  final String url;
+  final String title;
+
+  @override
+  State<PlatformWebViewScreen> createState() =>
+      _PlatformWebViewScreenState();
+}
+
+class _PlatformWebViewScreenState
+    extends State<PlatformWebViewScreen> {
+  late final WebViewController controller;
+
+  @override
+  void initState() {
+    super.initState();
+
+    controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..loadRequest(Uri.parse(widget.url));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: WebViewWidget(controller: controller),
+    );
+  }
+}
 class HomeTab extends StatefulWidget {
   const HomeTab({
     super.key,
