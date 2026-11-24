@@ -976,7 +976,15 @@ nextPageToken = data['nextPageToken']?.toString();
   Widget build(BuildContext context) {
     
 
-    return ListView(
+    return RefreshIndicator(
+  onRefresh: () async {
+    final query = searchText.trim().isEmpty
+        ? 'trending'
+        : searchText.trim();
+
+    await searchYouTube(query);
+  },
+  child: ListView(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
       children: [
         TextField(
