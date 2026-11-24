@@ -770,7 +770,7 @@ bool isLoadingMore = false;
     nextPageToken = null;
     searchResults = [];
   }
-})
+});
 
     try {
       final response = await youtubeDio.get(
