@@ -654,7 +654,8 @@ class _HomeTabState extends State<HomeTab> {
   String? searchError;
 
   List<Map<String, String>> searchResults = [];
-
+String? nextPageToken;
+bool isLoadingMore = false;
   
   final List<Map<String, dynamic>> shortcuts = [
     {
