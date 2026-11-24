@@ -766,6 +766,7 @@ bool isLoadingMore = false;
   if (loadMore) {
     isLoadingMore = true;
   } else {
+    searchText = query;
     isSearching = true;
     nextPageToken = null;
     searchResults = [];
