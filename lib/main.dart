@@ -748,7 +748,7 @@ bool isLoadingMore = false;
     }
   }
 
-  Future<void> searchYouTube(String value) async {
+  Future<void> searchYouTube(String value, {bool loadMore = false}) async {
     final query = value.trim();
 
     if (query.isEmpty) return;
