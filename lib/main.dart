@@ -785,7 +785,7 @@ bool isLoadingMore = false;
 
       final data =
           Map<String, dynamic>.from(response.data as Map);
-
+nextPageToken = data['nextPageToken']?.toString();
       final items = data['items'] as List<dynamic>? ?? [];
 
       final results = <Map<String, String>>[];
