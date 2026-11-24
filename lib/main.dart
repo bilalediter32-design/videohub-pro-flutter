@@ -649,7 +649,7 @@ class _HomeTabState extends State<HomeTab> {
   final Dio youtubeDio = Dio();
 
   String searchText = '';
-  bool isSearching = false;
+  bool showSearchPage = false;
   String? searchError;
 
   List<Map<String, String>> searchResults = [];
