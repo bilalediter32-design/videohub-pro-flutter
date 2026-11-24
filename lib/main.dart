@@ -876,20 +876,21 @@ class _HomeTabState extends State<HomeTab> {
   }
 
   Future<void> openPlatform(String url) async {
-    try {
-      await launchUrl(
-        Uri.parse(url),
-        mode: LaunchMode.inAppBrowserView,
-      );
-    } catch (_) {
-      if (!mounted) return;
+  final site = shortcuts.firstWhere(
+    (item) => item['url'] == url,
+    orElse: () => {'name': 'Website'},
+  );
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Could not open website.'),
-        ),
-      );
-    }
+  if (!mounted) return;
+
+  Navigator.of(context).push(
+    MaterialPageRoute(
+      builder: (_) => PlatformWebViewScreen(
+        url: url,
+        title: site['name'] as String,
+      ),
+    ),
+  );
   }
 
   Future<void> openVideo(String id) async {
