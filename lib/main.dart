@@ -868,12 +868,25 @@ nextPageToken = data['nextPageToken']?.toString();
       if (!mounted) return;
 
       setState(() {
-        searchResults = results;
-        isSearching = false;
-        if (results.isEmpty) {
-          searchError = 'No videos found.';
-        }
-      });
+  if (loadMore) {
+    final existingIds =
+        searchResults.map((video) => video['id']).toSet();
+
+    for (final video in results) {
+      if (existingIds.add(video['id'])) {
+        searchResults.add(video);
+      }
+    }
+    isLoadingMore = false;
+  } else {
+    searchResults = results;
+    isSearching = false;
+  }
+
+  if (searchResults.isEmpty) {
+    searchError = 'No videos found.';
+  }
+});
     } catch (e) {
       if (!mounted) return;
 
