@@ -763,6 +763,7 @@ bool isLoadingMore = false;
     setState(() {
       isSearching = true;
       searchError = null;
+      nextPageToken = null;
       searchResults = [];
     });
 
