@@ -1263,7 +1263,8 @@ const SizedBox(height: 20),
         
 
               ],
-    );
+      ),
+);
   }
 }
 class YouTubePlayerScreen extends StatefulWidget {
