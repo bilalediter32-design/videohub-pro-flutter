@@ -779,6 +779,7 @@ bool isLoadingMore = false;
     : 'relevance',
 'q': query,
 'key': youtubeApiKey,
+'pageToken': nextPageToken,
         },
       );
 
