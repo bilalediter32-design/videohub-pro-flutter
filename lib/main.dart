@@ -891,9 +891,14 @@ nextPageToken = data['nextPageToken']?.toString();
       if (!mounted) return;
 
       setState(() {
-        isSearching = false;
-        searchError = 'Search failed. Check internet or API settings.';
-      });
+  if (loadMore) {
+    isLoadingMore = false;
+  } else {
+    isSearching = false;
+  }
+
+  searchError = 'Search failed. Check internet or API settings.';
+});
     }
   }
 
