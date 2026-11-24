@@ -761,11 +761,16 @@ bool isLoadingMore = false;
     }
 
     setState(() {
-      isSearching = true;
-      searchError = null;
-      nextPageToken = null;
-      searchResults = [];
-    });
+  searchError = null;
+
+  if (loadMore) {
+    isLoadingMore = true;
+  } else {
+    isSearching = true;
+    nextPageToken = null;
+    searchResults = [];
+  }
+})
 
     try {
       final response = await youtubeDio.get(
