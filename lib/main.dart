@@ -650,6 +650,7 @@ class _HomeTabState extends State<HomeTab> {
 
   String searchText = '';
   bool showSearchPage = false;
+  bool isSearching = false;
   String? searchError;
 
   List<Map<String, String>> searchResults = [];
