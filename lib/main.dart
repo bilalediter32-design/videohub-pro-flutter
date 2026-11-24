@@ -1227,7 +1227,36 @@ const SizedBox(height: 20),
               ),
             );
           }),
+          const SizedBox(height: 12),
 
+          Center(
+            child: Text(
+              '${searchResults.length} Videos Loaded',
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 15,
+              ),
+            ),
+          ),
+
+          if (nextPageToken != null &&
+              nextPageToken!.isNotEmpty)
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: ElevatedButton(
+                  onPressed: isLoadingMore
+                      ? null
+                      : () => searchYouTube(
+                            searchText,
+                            loadMore: true,
+                          ),
+                  child: isLoadingMore
+                      ? const CircularProgressIndicator()
+                      : const Text('Load More Videos'),
+                ),
+              ),
+            ),
         ],
 
         
