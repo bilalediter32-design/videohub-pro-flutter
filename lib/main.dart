@@ -667,15 +667,21 @@ class _HomeTabState extends State<HomeTab> {
       isListening = true;
     });
 
-    await speech.listen(
+        await speech.listen(
       onResult: (result) {
         setState(() {
           searchController.text = result.recognizedWords;
           searchText = result.recognizedWords;
         });
       },
+      onStatus: (status) {
+        if (status == 'notListening' && mounted) {
+          setState(() {
+            isListening = false;
+          });
+        }
+      },
     );
-  }
 
   Future<void> stopVoiceSearch() async {
     await speech.stop();
