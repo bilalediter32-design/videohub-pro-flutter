@@ -1037,12 +1037,21 @@ nextPageToken = data['nextPageToken']?.toString();
                       }
                     },
                     decoration: InputDecoration(
-                      hintText: 'Search videos...',
-                      prefixIcon: const Icon(Icons.search),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                    ),
+  hintText: 'Search videos...',
+  prefixIcon: const Icon(Icons.search),
+  suffixIcon: IconButton(
+    icon: Icon(
+      isListening ? Icons.mic : Icons.mic_none,
+      color: isListening ? Colors.red : null,
+    ),
+    onPressed: isListening
+        ? stopVoiceSearch
+        : startVoiceSearch,
+  ),
+  border: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(14),
+  ),
+),
                   ),
                 ),
                 IconButton(
