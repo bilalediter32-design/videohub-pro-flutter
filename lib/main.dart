@@ -13,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 const String youtubeApiKey = String.fromEnvironment(
   'YOUTUBE_API_KEY',
