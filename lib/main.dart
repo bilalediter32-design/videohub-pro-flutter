@@ -648,7 +648,35 @@ class _HomeTabState extends State<HomeTab> {
       TextEditingController();
 
   final Dio youtubeDio = Dio();
+  final stt.SpeechToText speech = stt.SpeechToText();
+  bool isListening = false;
 
+  Future<void> startVoiceSearch() async {
+    final available = await speech.initialize();
+
+    if (!available) {
+      _message('Voice search is not available.');
+      return;
+    }
+
+    setState(() => isListening = true);
+
+    await speech.listen(
+      onResult: (result) {
+        setState(() {
+          searchController.text = result.recognizedWords;
+          searchText = result.recognizedWords;
+        });
+      },
+    );
+  }
+
+  Future<void> stopVoiceSearch() async {
+    await speech.stop();
+    if (mounted) {
+      setState(() => isListening = false);
+    }
+  }
   String searchText = '';
   bool showSearchPage = false;
   bool isSearching = false;
