@@ -2194,29 +2194,160 @@ class EmptyTab extends StatelessWidget {
         ),
       );
 }
-class ClipsTab extends StatelessWidget {
+class ClipsTab extends StatefulWidget {
   const ClipsTab({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const EmptyTab(
-      icon: Icons.play_circle_outline,
-      title: 'Clips',
-      message: 'Short videos will appear here.',
-    );
-  }
+  State<ClipsTab> createState() => _ClipsTabState();
 }
 
-class PlayZoneTab extends StatelessWidget {
-  const PlayZoneTab({super.key});
+class _ClipsTabState extends State<ClipsTab>
+    with SingleTickerProviderStateMixin {
+  late TabController tabController;
+
+  final List<String> categories = [
+    'All',
+    'Entertainment',
+    'Music',
+    'Comedy',
+    'Sports',
+    'Education',
+  ];
+
+  String selectedCategory = 'All';
+
+  @override
+  void initState() {
+    super.initState();
+    tabController = TabController(length: 5, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    tabController.dispose();
+    super.dispose();
+  }
+
+  Widget emptyClips(String title, String message) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(
+            Icons.video_collection_outlined,
+            size: 65,
+            color: Colors.grey,
+          ),
+          const SizedBox(height: 14),
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            message,
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return const EmptyTab(
-      icon: Icons.sports_esports_outlined,
-      title: 'PlayZone',
-      message: 'Games will appear here.',
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+          child: Row(
+            children: [
+              const Expanded(
+                child: Text(
+                  'Clips',
+                  style: TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.search),
+              ),
+            ],
+          ),
+        ),
+        TabBar(
+          controller: tabController,
+          isScrollable: true,
+          tabs: const [
+            Tab(text: 'For You'),
+            Tab(text: 'Following'),
+            Tab(text: 'Trending'),
+            Tab(text: 'Categories'),
+            Tab(text: 'Saved'),
+          ],
+        ),
+        Expanded(
+          child: TabBarView(
+            controller: tabController,
+            children: [
+              emptyClips(
+                'For You',
+                'Recommended short videos will appear here.',
+              ),
+              emptyClips(
+                'Following',
+                'Videos from followed creators will appear here.',
+              ),
+              emptyClips(
+                'Trending',
+                'Popular clips will appear here.',
+              ),
+              ListView(
+                padding: const EdgeInsets.all(16),
+                children: [
+                  const Text(
+                    'Explore Categories',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: categories.map((category) {
+                      return ChoiceChip(
+                        label: Text(category),
+                        selected: selectedCategory == category,
+                        onSelected: (selected) {
+                          setState(() {
+                            selectedCategory = category;
+                          });
+                        },
+                      );
+                    }).toList(),
+                  ),
+                  const SizedBox(height: 24),
+                  emptyClips(
+                    selectedCategory,
+                    'Clips from this category will appear here.',
+                  ),
+                ],
+              ),
+              emptyClips(
+                'Saved Clips',
+                'Your saved clips will appear here.',
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
-
