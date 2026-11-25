@@ -651,14 +651,15 @@ class _HomeTabState extends State<HomeTab> {
   final stt.SpeechToText speech = stt.SpeechToText();
   bool isListening = false;
 
-  Future<void> startVoiceSearch() async {
+    Future<void> startVoiceSearch() async {
     final available = await speech.initialize();
 
-ScaffoldMessenger.of(context).showSnackBar(
-  const SnackBar(
-    content: Text('Voice search is not available.'),
-  ),
-);
+    if (!available) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Voice search is not available.'),
+        ),
+      );
       return;
     }
 
@@ -672,7 +673,7 @@ ScaffoldMessenger.of(context).showSnackBar(
         });
       },
     );
-  }
+    }
 
   Future<void> stopVoiceSearch() async {
     await speech.stop();
