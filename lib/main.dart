@@ -995,10 +995,15 @@ nextPageToken = data['nextPageToken']?.toString();
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
       children: [
         TextField(
-          controller: searchController,
-          onChanged: (value) {
-            setState(() => searchText = value);
-          },onSubmitted: submitSearchOrUrl,
+  controller: searchController,
+  readOnly: true,
+  onTap: () {
+    setState(() => showSearchPage = true);
+  },
+  onChanged: (value) {
+    setState(() => searchText = value);
+  },
+  onSubmitted: submitSearchOrUrl,
           decoration: InputDecoration(
             hintText: 'Search videos or enter URL...',
             prefixIcon: const Icon(Icons.search),
