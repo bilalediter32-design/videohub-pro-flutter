@@ -979,10 +979,100 @@ nextPageToken = data['nextPageToken']?.toString();
       ],
     );
   }
+  Widget _buildSearchPage() {
+  return Scaffold(
+    body: SafeArea(
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.arrow_back),
+                  onPressed: () {
+                    setState(() => showSearchPage = false);
+                  },
+                ),
+                Expanded(
+                  child: TextField(
+                    controller: searchController,
+                    autofocus: true,
+                    onChanged: (value) {
+                      setState(() => searchText = value);
+                    },
+                    onSubmitted: (value) async {
+                      await searchYouTube(value);
+                      if (mounted) {
+                        setState(() => showSearchPage = false);
+                      }
+                    },
+                    decoration: InputDecoration(
+                      hintText: 'Search videos...',
+                      prefixIcon: const Icon(Icons.search),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.search),
+                  onPressed: () async {
+                    await searchYouTube(searchController.text);
+                    if (mounted) {
+                      setState(() => showSearchPage = false);
+                    }
+                  },
+                ),
+              ],
+            ),
+          ),
+          const Divider(),
+          const Padding(
+            padding: EdgeInsets.all(16),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Hot Searches',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+          Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            children: hotSearches
+                .where((item) => searchText.isEmpty ||
+                    item.toLowerCase().contains(
+                      searchText.toLowerCase(),
+                    ))
+                .map((item) => ActionChip(
+                      label: Text(item),
+                      onPressed: () async {
+                        searchController.text = item;
+                        await searchYouTube(item);
+                        if (mounted) {
+                          setState(() => showSearchPage = false);
+                        }
+                      },
+                    ))
+                .toList(),
+          ),
+        ],
+      ),
+    ),
+  );
+  }
   @override
   Widget build(BuildContext context) {
     
-
+if (showSearchPage) {
+  return _buildSearchPage();
+}
     return RefreshIndicator(
   onRefresh: () async {
     final query = searchText.trim().isEmpty
