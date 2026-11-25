@@ -2318,21 +2318,37 @@ class _ClipsTabState extends State<ClipsTab>
                     ),
                   ),
                   const SizedBox(height: 14),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: categories.map((category) {
-                      return ChoiceChip(
-                        label: Text(category),
-                        selected: selectedCategory == category,
-                        onSelected: (selected) {
-                          setState(() {
-                            selectedCategory = category;
-                          });
-                        },
-                      );
-                    }).toList(),
-                  ),
+                  
+Wrap(
+  spacing: 10,
+  runSpacing: 10,
+  children: categories.map((category) {
+    final icons = {
+      'All': Icons.apps,
+      'Entertainment': Icons.movie_outlined,
+      'Music': Icons.music_note,
+      'Comedy': Icons.sentiment_very_satisfied,
+      'Sports': Icons.sports,
+      'Education': Icons.school_outlined,
+    };
+
+    return ChoiceChip(
+      avatar: Icon(
+        icons[category] ?? Icons.video_library,
+        size: 18,
+      ),
+      label: Text(category),
+      selected: selectedCategory == category,
+      onSelected: (selected) {
+        if (!selected) return;
+        setState(() {
+          selectedCategory = category;
+        });
+      },
+    );
+  }).toList(),
+),
+
                   const SizedBox(height: 24),
                   emptyClips(
                     selectedCategory,
