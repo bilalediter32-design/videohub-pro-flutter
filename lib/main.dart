@@ -654,8 +654,11 @@ class _HomeTabState extends State<HomeTab> {
   Future<void> startVoiceSearch() async {
     final available = await speech.initialize();
 
-    if (!available) {
-      _message('Voice search is not available.');
+ScaffoldMessenger.of(context).showSnackBar(
+  const SnackBar(
+    content: Text('Voice search is not available.'),
+  ),
+);
       return;
     }
 
