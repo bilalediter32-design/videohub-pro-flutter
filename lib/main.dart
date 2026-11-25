@@ -656,7 +656,14 @@ class _HomeTabState extends State<HomeTab> {
   List<Map<String, String>> searchResults = [];
 String? nextPageToken;
 bool isLoadingMore = false;
-  
+  final List<String> hotSearches = [
+  'movie',
+  'song',
+  'sad song',
+  'drama',
+  'meri zindagi hai tu',
+  'naat',
+];
   final List<Map<String, dynamic>> shortcuts = [
     {
       'name': 'YouTube',
