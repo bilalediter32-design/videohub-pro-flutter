@@ -648,10 +648,10 @@ class _HomeTabState extends State<HomeTab> {
       TextEditingController();
 
   final Dio youtubeDio = Dio();
-  final stt.SpeechToText speech = stt.SpeechToText();
+    final stt.SpeechToText speech = stt.SpeechToText();
   bool isListening = false;
 
-    Future<void> startVoiceSearch() async {
+  Future<void> startVoiceSearch() async {
     final available = await speech.initialize();
 
     if (!available) {
@@ -663,7 +663,9 @@ class _HomeTabState extends State<HomeTab> {
       return;
     }
 
-    setState(() => isListening = true);
+    setState(() {
+      isListening = true;
+    });
 
     await speech.listen(
       onResult: (result) {
@@ -673,12 +675,15 @@ class _HomeTabState extends State<HomeTab> {
         });
       },
     );
-    }
+  }
 
   Future<void> stopVoiceSearch() async {
     await speech.stop();
+
     if (mounted) {
-      setState(() => isListening = false);
+      setState(() {
+        isListening = false;
+      });
     }
   }
   String searchText = '';
