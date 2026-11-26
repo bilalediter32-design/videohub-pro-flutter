@@ -652,39 +652,38 @@ class _HomeTabState extends State<HomeTab> {
   bool isListening = false;
 
   Future<void> startVoiceSearch() async {
-    final available = await speech.initialize();
-
-    if (!available) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Voice search is not available.'),
-        ),
-      );
-      return;
-    }
-
-    setState(() {
-      isListening = true;
-    });
-
-        await speech.listen(
-      onResult: (result) {
+  final available = await speech.initialize(
+    onStatus: (status) {
+      if (status == 'notListening' && mounted) {
         setState(() {
-          searchController.text = result.recognizedWords;
-          searchText = result.recognizedWords;
+          isListening = false;
         });
-      },
-      onStatus: (status) {
-        if (status == 'notListening' && mounted) {
-          setState(() {
-            isListening = false;
-          });
-        }
-      },
-    );
+      }
+    },
+  );
 
+  if (!available) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Voice search is not available.'),
+      ),
+    );
+    return;
   }
 
+  setState(() {
+    isListening = true;
+  });
+
+  await speech.listen(
+    onResult: (result) {
+      setState(() {
+        searchController.text = result.recognizedWords;
+        searchText = result.recognizedWords;
+      });
+    },
+  );
+  }
   Future<void> stopVoiceSearch() async {
         await speech.stop();
 
