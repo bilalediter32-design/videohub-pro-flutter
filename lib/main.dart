@@ -686,7 +686,7 @@ class _HomeTabState extends State<HomeTab> {
   }
 
   Future<void> stopVoiceSearch() async {
-    a{wait speech.stop();
+        await speech.stop();
 
     if (mounted) {
       setState(() {
